@@ -40,7 +40,7 @@ void main() {
                         var request = new char[512];
                         if (
                             r.read(request) < 1 ||
-                            (request[0] & Frames.TYPE_MASK) == 0
+                            (request[0] & Frames.TYPE_MASK) == Frames.TYPE_NA
                         ) {
                             w.write(
                                 (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
