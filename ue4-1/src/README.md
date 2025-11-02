@@ -32,3 +32,34 @@ Get Frame
 |10|Username|\0|
 +--+--------+--+
 ```
+
+### Response
+
+- Status codes
+  - 00 OK
+  - 01 Request malformed
+  - 11 Internal error
+
+Register Frame
+
+```
++--+--+
+|00|St|
++--+--+
+```
+
+Send Frame
+
+```
++--+--+
+|01|St|
++--+--+
+```
+
+Get Frame
+
+```
++--+--+------+--+---------+--+-------+--+---+
+|10|St|Sender|\0|Recipient|\0|Message|\0|...|
++--+--+------+--+---------+--+-------+--+---+
+```
