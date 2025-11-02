@@ -5,7 +5,18 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
-final char[] errorFrame = new char[] { 255 };
+final class Frames {
+
+    static final byte TYPE_REGISTER = 0b00;
+    static final byte TYPE_SEND = 0b01;
+    static final byte TYPE_GET = 0b10;
+    static final int TYPE_SHIFT = 6;
+
+    static final byte STATUS_OK = 0b00;
+    static final byte STATUS_MALFORMED = 0b01;
+    static final byte STATUS_ERROR = 0b11;
+    static final int STATUS_SHIFT = 4;
+}
 
 void main() {
     final var pool = Executors.newFixedThreadPool(
@@ -23,7 +34,7 @@ void main() {
                     ) {
                         var request = new char[512];
                         if (r.read(request) < 1) {
-                            w.write(errorFrame); // TODO return "malformed request"
+                            w.write(0b1111 << 4); // TODO return "malformed request"
                             return;
                         }
                     } catch (IOException e) {}
