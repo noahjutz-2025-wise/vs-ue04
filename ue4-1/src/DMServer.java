@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
+final char[] errorFrame = new char[] { 255 };
+
 void main() {
     final var pool = Executors.newFixedThreadPool(
         Runtime.getRuntime().availableProcessors()
@@ -18,7 +20,13 @@ void main() {
                             new InputStreamReader(socket.getInputStream())
                         );
                         final var w = new PrintWriter(socket.getOutputStream())
-                    ) {} catch (IOException e) {}
+                    ) {
+                        var request = new char[512];
+                        if (r.read(request) < 1) {
+                            w.write(errorFrame); // TODO return "malformed request"
+                            return;
+                        }
+                    } catch (IOException e) {}
                 });
             }
         }
