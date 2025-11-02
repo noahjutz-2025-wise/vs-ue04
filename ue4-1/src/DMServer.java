@@ -1,11 +1,3 @@
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.util.concurrent.Executors;
-
 final class Frames {
 
     static final byte TYPE_REGISTER = 0b00;
@@ -19,6 +11,11 @@ final class Frames {
     static final byte STATUS_MALFORMED = 0b01;
     static final byte STATUS_ERROR = 0b11;
     static final int STATUS_SHIFT = 4;
+}
+
+final class MessageServer {
+
+    final List<String> users = List.of();
 }
 
 void main() {
@@ -38,10 +35,7 @@ void main() {
                         )
                     ) {
                         var request = new char[512];
-                        if (
-                            r.read(request) < 1 ||
-                            (request[0] & Frames.TYPE_MASK) == Frames.TYPE_NA
-                        ) {
+                        if (r.read(request) < 1) {
                             w.write(
                                 (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
                                     (Frames.STATUS_MALFORMED <<
@@ -50,6 +44,19 @@ void main() {
                             w.flush();
                             return;
                         }
+
+                        switch (request[0] & Frames.TYPE_MASK) {
+                            case Frames.TYPE_REGISTER -> {}
+                            default -> {
+                                w.write(
+                                    (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
+                                        (Frames.STATUS_MALFORMED <<
+                                            Frames.STATUS_SHIFT)
+                                );
+                            }
+                        }
+
+                        w.flush();
                     } catch (IOException e) {}
                 });
             }
