@@ -3,16 +3,10 @@ private final class Frames {
     static final byte TYPE_REGISTER = 0b00;
     static final byte TYPE_SEND = 0b01;
     static final byte TYPE_GET = 0b10;
-    static final byte TYPE_NA = 0b11;
-    static final int TYPE_SHIFT = 6;
-    static final byte TYPE_MASK = (byte) (0b11 << TYPE_SHIFT);
 
     static final byte STATUS_OK = 0b00;
     static final byte STATUS_MALFORMED = 0b01;
     static final byte STATUS_ERROR = 0b11;
-    static final int STATUS_SHIFT = 4;
-
-    static final byte LENGTH_MASK = 0b00111111;
 }
 
 private final class MessageServer {
@@ -39,27 +33,18 @@ void main() {
                     ) {
                         var request = new char[512];
                         if (r.read(request) < 1) {
-                            w.write(
-                                (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
-                                    (Frames.STATUS_MALFORMED <<
-                                        Frames.STATUS_SHIFT)
-                            );
-                            w.flush();
+                            // TODO send invalid request error
                             return;
                         }
 
-                        switch (request[0] & Frames.TYPE_MASK) {
+                        switch (request[0]) {
                             case Frames.TYPE_REGISTER -> {
-                                var length = request[0] & Frames.LENGTH_MASK;
+                                var length = request[2];
                                 chat.users.add(new String(request, 1, length));
-                                IO.println(chat.users.toString());
+                                // TODO send success response
                             }
                             default -> {
-                                w.write(
-                                    (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
-                                        (Frames.STATUS_MALFORMED <<
-                                            Frames.STATUS_SHIFT)
-                                );
+                                // TODO send invalid request error
                             }
                         }
 
