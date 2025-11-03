@@ -1,14 +1,16 @@
-private final class MessageServer {
+private static final class MessageServer {
 
-    final List<String> users = List.of();
+    final List<String> users = new ArrayList<>();
 }
 
 void main() {
     final var chat = new MessageServer();
-    final var pool = Executors.newFixedThreadPool(
-        Runtime.getRuntime().availableProcessors()
-    );
-    try (final var server = new ServerSocket()) {
+    try (
+        final var pool = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors()
+        );
+        final var server = new ServerSocket()
+    ) {
         while (true) {
             try (final var socket = server.accept()) {
                 pool.execute(() -> {
