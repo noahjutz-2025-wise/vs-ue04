@@ -1,4 +1,4 @@
-final class Frames {
+private final class Frames {
 
     static final byte TYPE_REGISTER = 0b00;
     static final byte TYPE_SEND = 0b01;
@@ -11,14 +11,17 @@ final class Frames {
     static final byte STATUS_MALFORMED = 0b01;
     static final byte STATUS_ERROR = 0b11;
     static final int STATUS_SHIFT = 4;
+
+    static final byte LENGTH_MASK = 0b00111111;
 }
 
-final class MessageServer {
+private final class MessageServer {
 
     final List<String> users = List.of();
 }
 
 void main() {
+    final var chat = new MessageServer();
     final var pool = Executors.newFixedThreadPool(
         Runtime.getRuntime().availableProcessors()
     );
@@ -46,7 +49,11 @@ void main() {
                         }
 
                         switch (request[0] & Frames.TYPE_MASK) {
-                            case Frames.TYPE_REGISTER -> {}
+                            case Frames.TYPE_REGISTER -> {
+                                var length = request[0] & Frames.LENGTH_MASK;
+                                chat.users.add(new String(request, 1, length));
+                                IO.println(chat.users.toString());
+                            }
                             default -> {
                                 w.write(
                                     (Frames.TYPE_NA << Frames.TYPE_SHIFT) |
