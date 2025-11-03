@@ -41,6 +41,7 @@ private final class Protocol {
             return switch (type) {
                 case TYPE_REGISTER -> parseRegister(din);
                 case TYPE_SEND -> parseSend(din);
+                case TYPE_GET -> parseGet(din);
                 default -> {
                     yield null;
                 }
@@ -72,6 +73,13 @@ private final class Protocol {
                 new String(recip, StandardCharsets.UTF_8),
                 new String(msg, StandardCharsets.UTF_8)
             ));
+        }
+
+        private static Message parseGet(DataInputStream din) throws IOException {
+            final var reqid = din.readByte();
+            final var length = din.readByte();
+            final var username = din.readNBytes(length);
+            return new ReqGet(reqid, new String(username, StandardCharsets.UTF_8));
         }
     }
 }
