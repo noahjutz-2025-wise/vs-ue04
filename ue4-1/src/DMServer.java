@@ -99,28 +99,26 @@ void main() {
             try (final var socket = server.accept()) {
                 pool.execute(() -> {
                     try (
-                        final var r = new BufferedReader(
-                            new InputStreamReader(socket.getInputStream())
-                        );
-                        final var w = new BufferedOutputStream(
-                            socket.getOutputStream()
-                        )
+                        final var r = new DataInputStream(socket.getInputStream());
+                        final var w = new BufferedOutputStream(socket.getOutputStream())
                     ) {
-                        var request = new char[512];
-                        if (r.read(request) < 1) {
-                            // TODO send invalid request error
-                            return;
-                        }
-
-                        switch (request[0]) {
-                            case Protocol.TYPE_REGISTER -> {
-                                var length = request[2];
-                                chat.users.add(new String(request, 1, length));
-                                // TODO send success response
+                        switch (Protocol.Parser.parse(r)) {
+                            case Protocol.ReqRegister req -> {
+                                chat.users.add(req.username);
+                                // TODO reply
                             }
-                            default -> {
-                                // TODO send invalid request error
+                            case Protocol.ReqGet req -> {
+                                // TODO get
+                                // TODO reply
                             }
+                            case Protocol.ReqSend req -> {
+                                // TODO send
+                                // TODO reply
+                            }
+                            case null -> {
+                                // TODO reply
+                            }
+                            default -> throw new IllegalStateException();
                         }
 
                         w.flush();
