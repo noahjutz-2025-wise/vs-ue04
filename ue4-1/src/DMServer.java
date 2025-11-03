@@ -1,3 +1,7 @@
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 private final class Protocol {
 
     private interface Message {}
@@ -25,15 +29,25 @@ private final class Protocol {
 
     private static final class Parser {
 
-        Message parse(byte[] message) {
-            return switch (message[0]) {
-                case TYPE_REGISTER -> {
-                    yield null;
-                }
+        static Message parse(DataInputStream din) throws IOException {
+            final var type = din.readByte();
+            return switch (type) {
+                case TYPE_REGISTER -> parseRegister(din);
                 default -> {
                     yield null;
                 }
             };
+        }
+
+        private static Message parseRegister(DataInputStream din)
+            throws IOException {
+            final var reqid = din.readByte();
+            final var length = din.readByte();
+            final var name = din.readNBytes(length);
+            return new ReqRegister(
+                reqid,
+                new String(name, StandardCharsets.UTF_8)
+            );
         }
     }
 }
