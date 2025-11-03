@@ -1,4 +1,19 @@
-private final class Frames {
+private final class Protocol {
+
+    private interface Message {}
+
+    private record Msg(String from, String to, String msg) {}
+
+    private record ReqRegister(byte id, String username) implements Message {}
+
+    private record ReqSend(byte id, Msg message) implements Message {}
+
+    private record ReqGet(byte id, String username) implements Message {}
+
+    private record ResStatus(byte id, byte code) implements Message {}
+
+    private record ResGet(byte id, byte code, List<Msg> messages) implements
+        Message {}
 
     static final byte TYPE_REGISTER = 0b00;
     static final byte TYPE_SEND = 0b01;
@@ -7,6 +22,20 @@ private final class Frames {
     static final byte STATUS_OK = 0b00;
     static final byte STATUS_MALFORMED = 0b01;
     static final byte STATUS_ERROR = 0b11;
+
+    private static final class Parser {
+
+        Message parse(byte[] message) {
+            return switch (message[0]) {
+                case TYPE_REGISTER -> {
+                    yield null;
+                }
+                default -> {
+                    yield null;
+                }
+            };
+        }
+    }
 }
 
 private final class MessageServer {
@@ -38,7 +67,7 @@ void main() {
                         }
 
                         switch (request[0]) {
-                            case Frames.TYPE_REGISTER -> {
+                            case Protocol.TYPE_REGISTER -> {
                                 var length = request[2];
                                 chat.users.add(new String(request, 1, length));
                                 // TODO send success response
