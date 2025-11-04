@@ -42,7 +42,7 @@ void main() {
                                 // TODO reply
                             }
                             default -> throw new IllegalStateException();
-                        }
+                        };
 
                         w.write(Protocol.Encoder.encode(res));
                         w.flush();
