@@ -28,9 +28,19 @@ void main() {
                                 );
                             }
                             case Protocol.ReqGet req -> {
-                                // TODO get
-                                // TODO reply
-                                throw new UnsupportedOperationException();
+                                final var messages = service.messages
+                                    .stream()
+                                    .filter(msg ->
+                                        msg.to().equals(req.username())
+                                    )
+                                    .toList();
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResGet(
+                                        req.id(),
+                                        Protocol.STATUS_OK,
+                                        messages
+                                    )
+                                );
                             }
                             case Protocol.ReqSend req -> {
                                 service.messages.add(req.message());
