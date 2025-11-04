@@ -22,10 +22,13 @@ void main() {
                             socket.getOutputStream()
                         )
                     ) {
-                        switch (Protocol.Decoder.parse(r)) {
+                        final Message res = switch (Protocol.Decoder.parse(r)) {
                             case Protocol.ReqRegister req -> {
                                 chat.users.add(req.username());
-                                // TODO reply
+                                return new Protocol.ResStatus(
+                                    req.id(),
+                                    Protocol.STATUS_OK
+                                );
                             }
                             case Protocol.ReqGet req -> {
                                 // TODO get
@@ -41,6 +44,7 @@ void main() {
                             default -> throw new IllegalStateException();
                         }
 
+                        w.write(Protocol.Encoder.encode(res));
                         w.flush();
                     } catch (IOException e) {}
                 });
