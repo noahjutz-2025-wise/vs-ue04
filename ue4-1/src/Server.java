@@ -22,29 +22,34 @@ void main() {
                             socket.getOutputStream()
                         )
                     ) {
-                        final Message res = switch (Protocol.Decoder.parse(r)) {
+                        final byte[] res = switch (Protocol.Decoder.parse(r)) {
                             case Protocol.ReqRegister req -> {
                                 chat.users.add(req.username());
-                                return new Protocol.ResStatus(
-                                    req.id(),
-                                    Protocol.STATUS_OK
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResStatus(
+                                        req.id(),
+                                        Protocol.STATUS_OK
+                                    )
                                 );
                             }
                             case Protocol.ReqGet req -> {
                                 // TODO get
                                 // TODO reply
+                                throw new UnsupportedOperationException();
                             }
                             case Protocol.ReqSend req -> {
                                 // TODO send
                                 // TODO reply
+                                throw new UnsupportedOperationException();
                             }
                             case null -> {
                                 // TODO reply
+                                throw new UnsupportedOperationException();
                             }
                             default -> throw new IllegalStateException();
                         };
 
-                        w.write(Protocol.Encoder.encode(res));
+                        w.write(res);
                         w.flush();
                     } catch (IOException e) {}
                 });
