@@ -30,7 +30,7 @@ public final class Protocol {
     static final byte STATUS_MALFORMED = 0b01;
     static final byte STATUS_ERROR = 0b11;
 
-    public static final class Parser {
+    public static final class Decoder {
 
         public static Message parse(DataInputStream din) throws IOException {
             final var type = din.readByte();

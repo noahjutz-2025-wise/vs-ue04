@@ -15,10 +15,14 @@ void main() {
             try (final var socket = server.accept()) {
                 pool.execute(() -> {
                     try (
-                        final var r = new DataInputStream(socket.getInputStream());
-                        final var w = new BufferedOutputStream(socket.getOutputStream())
+                        final var r = new DataInputStream(
+                            socket.getInputStream()
+                        );
+                        final var w = new BufferedOutputStream(
+                            socket.getOutputStream()
+                        )
                     ) {
-                        switch (Protocol.Parser.parse(r)) {
+                        switch (Protocol.Decoder.parse(r)) {
                             case Protocol.ReqRegister req -> {
                                 chat.users.add(req.username());
                                 // TODO reply
@@ -38,11 +42,9 @@ void main() {
                         }
 
                         w.flush();
-                    } catch (IOException e) {
-                    }
+                    } catch (IOException e) {}
                 });
             }
         }
-    } catch (IOException e) {
-    }
+    } catch (IOException e) {}
 }
