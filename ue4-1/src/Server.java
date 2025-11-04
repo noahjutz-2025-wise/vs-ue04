@@ -1,5 +1,5 @@
 void main() {
-    final var chat = new MessageService();
+    final var service = new MessageService();
     try (
         final var pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors()
@@ -19,7 +19,7 @@ void main() {
                     ) {
                         final byte[] res = switch (Protocol.Decoder.parse(r)) {
                             case Protocol.ReqRegister req -> {
-                                chat.users.add(req.username());
+                                service.users.add(req.username());
                                 yield Protocol.Encoder.encode(
                                     new Protocol.ResStatus(
                                         req.id(),
@@ -33,9 +33,13 @@ void main() {
                                 throw new UnsupportedOperationException();
                             }
                             case Protocol.ReqSend req -> {
-                                // TODO send
-                                // TODO reply
-                                throw new UnsupportedOperationException();
+                                service.messages.add(req.message());
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResStatus(
+                                        req.id(),
+                                        Protocol.STATUS_OK
+                                    )
+                                );
                             }
                             case null -> {
                                 // TODO reply
