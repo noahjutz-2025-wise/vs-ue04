@@ -25,6 +25,8 @@ public final class Protocol {
     static final byte TYPE_REQ_REGISTER = 0;
     static final byte TYPE_REQ_SEND = 1;
     static final byte TYPE_REQ_GET = 2;
+    static final byte TYPE_RES_STATUS = 3;
+    static final byte TYPE_RES_GET = 4;
 
     static final byte STATUS_OK = 0;
     static final byte STATUS_MALFORMED = 1;
@@ -89,15 +91,16 @@ public final class Protocol {
     public static final class Encoder {
 
         public static byte[] encode(ResStatus res) {
-            return new byte[] { res.id, res.code };
+            return new byte[] { TYPE_RES_STATUS, res.id, res.code };
         }
 
         public static byte[] encode(ResGet res) throws IOException {
             var bos = new ByteArrayOutputStream();
 
-            bos.write(
-                new byte[] { res.id, res.code, (byte) res.messages.size() }
-            );
+            bos.write(TYPE_RES_GET);
+            bos.write(res.id());
+            bos.write(res.code());
+            bos.write(res.messages.size());
 
             for (var msg : res.messages) {
                 final var from = msg.from.getBytes(StandardCharsets.UTF_8);
