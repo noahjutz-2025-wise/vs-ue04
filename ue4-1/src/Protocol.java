@@ -88,11 +88,11 @@ public final class Protocol {
 
     public static final class Encoder {
 
-        public byte[] encode(ResStatus res) {
+        public static byte[] encode(ResStatus res) {
             return new byte[] { res.id, res.code };
         }
 
-        public byte[] encode(ResGet res) throws IOException {
+        public static byte[] encode(ResGet res) throws IOException {
             var bos = new ByteArrayOutputStream();
 
             bos.write(
