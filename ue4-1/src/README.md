@@ -49,9 +49,9 @@ Get request
 ### Response
 
 - STATUS
-  - 00 OK
-  - 01 Request malformed
-  - 11 Internal error
+  - 0 OK
+  - 1 Request malformed
+  - 2 Internal error
 
 Status response
 

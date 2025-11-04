@@ -22,22 +22,22 @@ public final class Protocol {
     public record ResGet(byte id, byte code, List<Msg> messages) implements
         Message {}
 
-    static final byte TYPE_REGISTER = 0b00;
-    static final byte TYPE_SEND = 0b01;
-    static final byte TYPE_GET = 0b10;
+    static final byte TYPE_REQ_REGISTER = 0;
+    static final byte TYPE_REQ_SEND = 1;
+    static final byte TYPE_REQ_GET = 2;
 
-    static final byte STATUS_OK = 0b00;
-    static final byte STATUS_MALFORMED = 0b01;
-    static final byte STATUS_ERROR = 0b11;
+    static final byte STATUS_OK = 0;
+    static final byte STATUS_MALFORMED = 1;
+    static final byte STATUS_ERROR = 2;
 
     public static final class Decoder {
 
         public static Message parse(DataInputStream din) throws IOException {
             final var type = din.readByte();
             return switch (type) {
-                case TYPE_REGISTER -> parseRegister(din);
-                case TYPE_SEND -> parseSend(din);
-                case TYPE_GET -> parseGet(din);
+                case TYPE_REQ_REGISTER -> parseRegister(din);
+                case TYPE_REQ_SEND -> parseSend(din);
+                case TYPE_REQ_GET -> parseGet(din);
                 default -> {
                     yield null;
                 }
