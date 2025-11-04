@@ -1,10 +1,5 @@
-private static final class MessageServer {
-
-    final List<String> users = new ArrayList<>();
-}
-
 void main() {
-    final var chat = new MessageServer();
+    final var chat = new MessageService();
     try (
         final var pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors()
