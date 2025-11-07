@@ -4,7 +4,7 @@ void main() {
         final var pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors()
         );
-        final var server = new ServerSocket()
+        final var server = new ServerSocket(1225)
     ) {
         while (true) {
             try (final var socket = server.accept()) {
@@ -60,9 +60,13 @@ void main() {
 
                         w.write(res);
                         w.flush();
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                        IO.println(e);
+                    }
                 });
             }
         }
-    } catch (IOException e) {}
+    } catch (IOException e) {
+        IO.println(e);
+    }
 }
