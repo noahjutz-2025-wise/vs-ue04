@@ -21,31 +21,31 @@ void main() {
                     final var request = Protocol.Decoder.parse(r);
                     try {
                         final byte[] res = switch (request) {
-                            case Protocol.ReqRegister req -> {
+                            case Protocol.Message.ReqRegister req -> {
                                 service.addUser(req.username());
                                 yield Protocol.Encoder.encode(
-                                    new Protocol.ResStatus(
+                                    new Protocol.Message.ResStatus(
                                         req.id(),
                                         Protocol.STATUS_OK
                                     )
                                 );
                             }
-                            case Protocol.ReqGet req -> {
+                            case Protocol.Message.ReqGet req -> {
                                 final var messages = service.get(
                                     req.username()
                                 );
                                 yield Protocol.Encoder.encode(
-                                    new Protocol.ResGet(
+                                    new Protocol.Message.ResGet(
                                         req.id(),
                                         Protocol.STATUS_OK,
                                         messages
                                     )
                                 );
                             }
-                            case Protocol.ReqSend req -> {
+                            case Protocol.Message.ReqSend req -> {
                                 service.send(req.message());
                                 yield Protocol.Encoder.encode(
-                                    new Protocol.ResStatus(
+                                    new Protocol.Message.ResStatus(
                                         req.id(),
                                         Protocol.STATUS_OK
                                     )

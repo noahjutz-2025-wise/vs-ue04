@@ -6,25 +6,32 @@ import java.util.List;
 
 public final class Protocol {
 
-    public interface Message {}
-
     public record Msg(String from, String to, String msg) {}
 
-    public record ReqRegister(byte id, String username) implements Message {}
+    public sealed interface Message
+        permits
+            Message.ReqRegister,
+            Message.ReqSend,
+            Message.ReqGet,
+            Message.ResStatus,
+            Message.ResGet {
+        public record ReqRegister(byte id, String username) implements
+            Message {}
 
-    public record ReqSend(byte id, Msg message) implements Message {}
+        public record ReqSend(byte id, Msg message) implements Message {}
 
-    public record ReqGet(byte id, String username) implements Message {}
+        public record ReqGet(byte id, String username) implements Message {}
 
-    public record ResStatus(byte id, byte code, String message) implements
-        Message {
-        public ResStatus(byte id, byte code) {
-            this(id, code, "");
+        public record ResStatus(byte id, byte code, String message) implements
+            Message {
+            public ResStatus(byte id, byte code) {
+                this(id, code, "");
+            }
         }
-    }
 
-    public record ResGet(byte id, byte code, List<Msg> messages) implements
-        Message {}
+        public record ResGet(byte id, byte code, List<Msg> messages) implements
+            Message {}
+    }
 
     static final byte TYPE_REQ_REGISTER = 0;
     static final byte TYPE_REQ_SEND = 1;
@@ -53,7 +60,7 @@ public final class Protocol {
             final var reqid = din.readByte();
             final var length = din.readByte();
             final var name = din.readNBytes(length);
-            return new ReqRegister(
+            return new Message.ReqRegister(
                 reqid,
                 new String(name, StandardCharsets.UTF_8)
             );
@@ -68,7 +75,7 @@ public final class Protocol {
             final var recip = din.readNBytes(recipLength);
             final var msgLength = (din.readByte() << 8) | din.readByte();
             final var msg = din.readNBytes(msgLength);
-            return new ReqSend(
+            return new Message.ReqSend(
                 reqid,
                 new Msg(
                     new String(username, StandardCharsets.UTF_8),
@@ -83,7 +90,7 @@ public final class Protocol {
             final var reqid = din.readByte();
             final var length = din.readByte();
             final var username = din.readNBytes(length);
-            return new ReqGet(
+            return new Message.ReqGet(
                 reqid,
                 new String(username, StandardCharsets.UTF_8)
             );
@@ -92,7 +99,7 @@ public final class Protocol {
 
     public static final class Encoder {
 
-        public static byte[] encode(ResStatus res) throws IOException {
+        public static byte[] encode(Message.ResStatus res) throws IOException {
             final var bos = new ByteArrayOutputStream();
             bos.write(TYPE_RES_STATUS);
             bos.write(res.id());
@@ -106,7 +113,7 @@ public final class Protocol {
             return bos.toByteArray();
         }
 
-        public static byte[] encode(ResGet res) throws IOException {
+        public static byte[] encode(Message.ResGet res) throws IOException {
             final var bos = new ByteArrayOutputStream();
 
             bos.write(TYPE_RES_GET);
