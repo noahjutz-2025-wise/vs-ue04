@@ -15,6 +15,8 @@ public final class Protocol {
             Message.ReqGet,
             Message.ResStatus,
             Message.ResGet {
+        byte id();
+
         public record ReqRegister(byte id, String username) implements
             Message {}
 

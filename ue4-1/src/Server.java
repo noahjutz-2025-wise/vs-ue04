@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Optional;
 
 void main() {
     final var service = new MessageService();
@@ -58,6 +59,15 @@ void main() {
                         w.flush();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        final var error = new Protocol.Message.ResStatus(
+                            request.id(),
+                            Protocol.STATUS_ERROR,
+                            Optional.ofNullable(e.toString()).orElse(
+                                "Unknown Error"
+                            )
+                        );
+                        w.write(Protocol.Encoder.encode(error));
+                        w.flush();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
