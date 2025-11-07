@@ -57,9 +57,9 @@ Get request
 ```
 
 - Example:
-    - 2 0 4 noah
-    - 02 00 04 6e6f6168
-    - `echo -n '\x02\x00\x04\x6e\x6f\x61\x68' | string unescape | nc localhost 1225 | xxd`
+    - 2 0 5 sarah
+    - 02 00 05 7361726168
+    - `echo -n '\x02\x00\x05\x73\x61\x72\x61\x68' | string unescape | nc localhost 1225 | xxd`
 
 ### Response
 
