@@ -16,7 +16,8 @@ public final class Protocol {
 
     public record ReqGet(byte id, String username) implements Message {}
 
-    public record ResStatus(byte id, byte code) implements Message {}
+    public record ResStatus(byte id, byte code, String message) implements
+        Message {}
 
     public record ResGet(byte id, byte code, List<Msg> messages) implements
         Message {}
@@ -87,8 +88,18 @@ public final class Protocol {
 
     public static final class Encoder {
 
-        public static byte[] encode(ResStatus res) {
-            return new byte[] { TYPE_RES_STATUS, res.id, res.code };
+        public static byte[] encode(ResStatus res) throws IOException {
+            final var bos = new ByteArrayOutputStream();
+            bos.write(TYPE_RES_STATUS);
+            bos.write(res.id());
+            bos.write(res.code());
+
+            final var msg = res.message.getBytes(StandardCharsets.UTF_8);
+
+            bos.write(msg.length);
+            bos.write(msg);
+
+            return bos.toByteArray();
         }
 
         public static byte[] encode(ResGet res) throws IOException {
