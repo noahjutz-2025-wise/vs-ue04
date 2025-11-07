@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 void main() {
     final var service = new MessageService();
     try (
@@ -16,42 +18,48 @@ void main() {
                         socket.getOutputStream()
                     )
                 ) {
-                    final byte[] res = switch (Protocol.Decoder.parse(r)) {
-                        case Protocol.ReqRegister req -> {
-                            service.addUser(req.username());
-                            yield Protocol.Encoder.encode(
-                                new Protocol.ResStatus(
-                                    req.id(),
-                                    Protocol.STATUS_OK
-                                )
-                            );
-                        }
-                        case Protocol.ReqGet req -> {
-                            final var messages = service.get(req.username());
-                            yield Protocol.Encoder.encode(
-                                new Protocol.ResGet(
-                                    req.id(),
-                                    Protocol.STATUS_OK,
-                                    messages
-                                )
-                            );
-                        }
-                        case Protocol.ReqSend req -> {
-                            service.send(req.message());
-                            yield Protocol.Encoder.encode(
-                                new Protocol.ResStatus(
-                                    req.id(),
-                                    Protocol.STATUS_OK
-                                )
-                            );
-                        }
-                        default -> throw new IllegalStateException();
-                    };
+                    final var request = Protocol.Decoder.parse(r);
+                    try {
+                        final byte[] res = switch (request) {
+                            case Protocol.ReqRegister req -> {
+                                service.addUser(req.username());
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResStatus(
+                                        req.id(),
+                                        Protocol.STATUS_OK
+                                    )
+                                );
+                            }
+                            case Protocol.ReqGet req -> {
+                                final var messages = service.get(
+                                    req.username()
+                                );
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResGet(
+                                        req.id(),
+                                        Protocol.STATUS_OK,
+                                        messages
+                                    )
+                                );
+                            }
+                            case Protocol.ReqSend req -> {
+                                service.send(req.message());
+                                yield Protocol.Encoder.encode(
+                                    new Protocol.ResStatus(
+                                        req.id(),
+                                        Protocol.STATUS_OK
+                                    )
+                                );
+                            }
+                            default -> throw new IllegalStateException();
+                        };
 
-                    w.write(res);
-                    w.flush();
+                        w.write(res);
+                        w.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } catch (IOException e) {
-                    IO.println(e);
                     e.printStackTrace();
                 }
             });
