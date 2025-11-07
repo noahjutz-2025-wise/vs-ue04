@@ -24,6 +24,8 @@ Register request
 +--------+
 ```
 
+Example: 0 0 4 noah (0x00 00 04 6e6f6168)
+
 Send request
 
 ```
