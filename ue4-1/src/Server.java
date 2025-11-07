@@ -18,7 +18,7 @@ void main() {
                 ) {
                     final byte[] res = switch (Protocol.Decoder.parse(r)) {
                         case Protocol.ReqRegister req -> {
-                            service.users.add(req.username());
+                            service.addUser(req.username());
                             yield Protocol.Encoder.encode(
                                 new Protocol.ResStatus(
                                     req.id(),
@@ -27,10 +27,7 @@ void main() {
                             );
                         }
                         case Protocol.ReqGet req -> {
-                            final var messages = service.messages
-                                .stream()
-                                .filter(msg -> msg.to().equals(req.username()))
-                                .toList();
+                            final var messages = service.get(req.username());
                             yield Protocol.Encoder.encode(
                                 new Protocol.ResGet(
                                     req.id(),
@@ -40,7 +37,7 @@ void main() {
                             );
                         }
                         case Protocol.ReqSend req -> {
-                            service.messages.add(req.message());
+                            service.send(req.message());
                             yield Protocol.Encoder.encode(
                                 new Protocol.ResStatus(
                                     req.id(),
