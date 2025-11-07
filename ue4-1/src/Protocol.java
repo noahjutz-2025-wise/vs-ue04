@@ -64,7 +64,7 @@ public final class Protocol {
             final var username = din.readNBytes(userLength);
             final var recipLength = din.readByte();
             final var recip = din.readNBytes(recipLength);
-            final var msgLength = ByteBuffer.wrap(din.readNBytes(2)).getInt();
+            final var msgLength = (din.readByte() << 8) | din.readByte();
             final var msg = din.readNBytes(msgLength);
             return new ReqSend(
                 reqid,
