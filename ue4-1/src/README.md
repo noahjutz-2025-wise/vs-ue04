@@ -1,5 +1,11 @@
 # Direct Messages Server
 
+## Quickstart
+
+```
+javac *.java && java Server
+```
+
 ## Protocol
 
 - TYPE
