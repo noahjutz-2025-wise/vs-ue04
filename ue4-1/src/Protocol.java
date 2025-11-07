@@ -17,7 +17,11 @@ public final class Protocol {
     public record ReqGet(byte id, String username) implements Message {}
 
     public record ResStatus(byte id, byte code, String message) implements
-        Message {}
+        Message {
+        public ResStatus(byte id, byte code) {
+            this(id, code, "");
+        }
+    }
 
     public record ResGet(byte id, byte code, List<Msg> messages) implements
         Message {}
