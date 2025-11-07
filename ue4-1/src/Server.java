@@ -45,10 +45,6 @@ void main() {
                                 )
                             );
                         }
-                        case null -> {
-                            // TODO reply
-                            throw new UnsupportedOperationException();
-                        }
                         default -> throw new IllegalStateException();
                     };
 

@@ -1,7 +1,6 @@
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -40,9 +39,7 @@ public final class Protocol {
                 case TYPE_REQ_REGISTER -> parseRegister(din);
                 case TYPE_REQ_SEND -> parseSend(din);
                 case TYPE_REQ_GET -> parseGet(din);
-                default -> {
-                    yield null;
-                }
+                default -> throw new UnsupportedOperationException();
             };
         }
 
