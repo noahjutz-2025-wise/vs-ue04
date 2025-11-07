@@ -107,7 +107,7 @@ public final class Protocol {
         }
 
         public static byte[] encode(ResGet res) throws IOException {
-            var bos = new ByteArrayOutputStream();
+            final var bos = new ByteArrayOutputStream();
 
             bos.write(TYPE_RES_GET);
             bos.write(res.id());
