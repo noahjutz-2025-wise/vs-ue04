@@ -24,8 +24,10 @@ Register request
 +--------+
 ```
 
-- Example: 0 0 4 noah (0x00 00 04 6e6f6168)
-- `echo -n "\x00\x00\x04\x6e\x6f\x61\x68" | string unescape | nc localhost 1225 | xxd`
+- Example:
+    - 0 0 4 noah
+    - 00 00 04 6e6f6168
+    - `echo -n "\x00\x00\x04\x6e\x6f\x61\x68" | string unescape | nc localhost 1225 | xxd`
 
 Send request
 
@@ -38,6 +40,11 @@ Send request
 |LENGTH   LENGTH  |MSG...           |
 +--------+--------+--------+--------+
 ```
+
+- Example:
+    - 1 0 4 noah 5 sarah 12 salutations!
+    - 01 00 04 6e6f6168 05 7361726168 000C 73616c75746174696f6e7321
+    - `echo -n '\x01\x00\x04\x6e\x6f\x61\x68\x05\x73\x61\x72\x61\x68\x00\x0C\x73\x61\x6c\x75\x74\x61\x74\x69\x6f\x6e\x73\x21' | string unescape | nc localhost 1225 | xxd`
 
 Get request
 
