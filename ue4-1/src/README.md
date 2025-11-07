@@ -24,7 +24,8 @@ Register request
 +--------+
 ```
 
-Example: 0 0 4 noah (0x00 00 04 6e6f6168)
+- Example: 0 0 4 noah (0x00 00 04 6e6f6168)
+- `echo -n "\x00\x00\x04\x6e\x6f\x61\x68" | string unescape | nc localhost 1225 | xxd`
 
 Send request
 
