@@ -29,7 +29,6 @@ public class Protocol {
             case "OPEN" -> new Open(components[1]);
             case "EXIT" -> new Exit();
             case "PUBL" -> new Publ(components[1]);
-            case "ADMN" -> new Admn(components[1]);
             default -> throw new IllegalArgumentException(
                 "Invalid operation: " + components[1]
             );
