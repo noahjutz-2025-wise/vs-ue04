@@ -9,12 +9,14 @@ public class MessageService {
     private final Map<Socket, String> sockets = new HashMap<>();
 
     public void open(Socket socket, String username) {
+        IO.println("OPEN: " + username);
         final var msg = new Protocol.Admn("Welcome, " + username + "!");
         dispatch(msg);
         sockets.put(socket, username);
     }
 
     public void exit(Socket socket) {
+        IO.println("EXIT: " + sockets.get(socket));
         final var msg = new Protocol.Admn(
             "Goodbye, " + sockets.get(socket) + "!"
         );
@@ -23,6 +25,7 @@ public class MessageService {
     }
 
     public void publ(Socket socket, String message) {
+        IO.println("PUBL: " + sockets.get(socket) + ": " + message);
         final var msg = new Protocol.Show(sockets.get(socket), message);
         dispatch(msg);
     }
