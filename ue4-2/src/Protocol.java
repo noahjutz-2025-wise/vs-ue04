@@ -1,5 +1,17 @@
 public class Protocol {
 
+    public sealed interface Message permits Open, Exit, Publ, Show, Admn {}
+
+    public record Open(String username) implements Message {}
+
+    public record Exit() implements Message {}
+
+    public record Publ(String message) implements Message {}
+
+    public record Show(String from, String message) implements Message {}
+
+    public record Admn(String message) implements Message {}
+
     public static void parse(String line) {
         if (line.length() > 1024) {
             line = line.substring(0, 1024);
