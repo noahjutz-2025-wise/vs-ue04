@@ -5,7 +5,7 @@ public class RequestHandler {
 
     public static void handle(
         Socket socket,
-        Message request,
+        Protocol.Message request,
         MessageService service
     ) {
         switch (request) {
@@ -18,6 +18,7 @@ public class RequestHandler {
             case Protocol.Publ req -> {
                 service.publ(socket, req.message());
             }
+            default -> throw new IllegalStateException();
         }
     }
 }
