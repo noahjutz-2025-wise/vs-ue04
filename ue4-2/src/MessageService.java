@@ -1,17 +1,12 @@
 import java.net.Socket;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MessageService {
 
-    private final Map<Socket, String> sockets;
+    private final Map<Socket, String> sockets = new HashMap<>();
 
-    public MessageService(HashSet<Socket> sockets) {
-        this.sockets = sockets
-            .stream()
-            .collect(Collectors.toMap(socket -> socket, socket -> null));
+    public void open(Socket socket, String username) {
+        sockets.put(socket, username);
     }
-
-    public void open(Socket socket, String username) {}
 }
