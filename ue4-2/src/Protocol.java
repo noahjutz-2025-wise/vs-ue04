@@ -35,4 +35,18 @@ public class Protocol {
             );
         };
     }
+
+    public static String encode(Show message) {
+        assert !message.from().contains("#");
+        assert !message.from().contains("\n");
+        assert !message.message().contains("#");
+        assert !message.message().contains("\n");
+        return "SHOW#" + message.from() + "#" + message.message();
+    }
+
+    public static String encode(Admn message) {
+        assert !message.message().contains("#");
+        assert !message.message().contains("\n");
+        return "ADMN#" + message.message();
+    }
 }
