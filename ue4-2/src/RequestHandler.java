@@ -1,4 +1,3 @@
-import Protocol.Message;
 import java.net.Socket;
 
 public class RequestHandler {
