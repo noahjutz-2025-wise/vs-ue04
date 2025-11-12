@@ -1,13 +1,23 @@
 import Protocol.Message;
+import java.net.Socket;
 
 public class RequestHandler {
 
-    public static void handle(Message request) {
+    public static void handle(
+        Socket socket,
+        Message request,
+        MessageService service
+    ) {
         switch (request) {
-            case Protocol.Open req -> {}
-            case Protocol.Exit req -> {}
-            case Protocol.Publ req -> {}
-            case Protocol.Admn req -> {}
+            case Protocol.Open req -> {
+                service.open(socket, req.username());
+            }
+            case Protocol.Exit req -> {
+                service.exit(socket);
+            }
+            case Protocol.Publ req -> {
+                service.publ(socket, req.message());
+            }
         }
     }
 }
