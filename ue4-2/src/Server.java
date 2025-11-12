@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 
+final MessageService service = new MessageService();
+
 void main() {
     try (final var server = new ServerSocket(2345)) {
         while (true) {
@@ -16,7 +18,8 @@ void main() {
                 ) {
                     String line;
                     while ((line = in.readLine()) != null) {
-                        out.println(line.toUpperCase());
+                        var message = Protocol.parse(line);
+                        RequestHandler.handle(socket, message, service);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
