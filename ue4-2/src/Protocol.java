@@ -12,7 +12,7 @@ public class Protocol {
 
     public record Admn(String message) implements Message {}
 
-    public static void parse(String line) {
+    public static Message parse(String line) {
         if (line.length() > 1024) {
             line = line.substring(0, 1024);
         }
@@ -25,12 +25,14 @@ public class Protocol {
             );
         }
 
-        switch (components[0]) {
-            case "OPEN" -> {}
-            case "EXIT" -> {}
-            case "PUBL" -> {}
-            case "SHOW" -> {}
-            case "ADMN" -> {}
-        }
+        return switch (components[0]) {
+            case "OPEN" -> new Open(components[1]);
+            case "EXIT" -> new Exit();
+            case "PUBL" -> new Publ(components[1]);
+            case "ADMN" -> new Admn(components[1]);
+            default -> throw new IllegalArgumentException(
+                "Invalid operation: " + components[1]
+            );
+        };
     }
 }
